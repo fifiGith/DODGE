@@ -19,6 +19,7 @@ class GameWindow(arcade.Window):
 
 	def on_draw(self):
 		arcade.start_render()
+		self.world.update()
 		self.world.target.render()
 		self.world.player.render()
 		self.world.spawn_bullet()
@@ -29,6 +30,7 @@ class World:
 		self.target = Target()
 		self.bullet = Bullet(None)
 
+		self.player_collide_bullet = False
 		self.bullet_list = []
 
 	def spawn_bullet(self):
@@ -36,26 +38,29 @@ class World:
 		for bullet in self.bullet_list:
 			bullet.render()
 
+	def update(self):
+		for bullet in self.bullet_list:
+			self.player_collide_bullet = arcade.geometry.check_for_collision(bullet.sprite, self.player.sprite)
+		self.plyer_collide_target = arcade.geometry.check_for_collision(self.target.sprite, self.player.sprite)
+
 class Player():
 	def __init__(self, world):
 		self.x = 0
 		self.y = 0
 		self.circle_radius = 3
 
-		self.die = False
-
 		self.world = world
 
-		self.sprite = arcade.Sprite('images/player.png')
+		self.sprite = arcade.Sprite('images/player.png', 1)
 
 	def update(self):
-		pass
+		if self.world.player_collide_bullet == True:
+			self.sprite.kill()
 
 	def render(self):
 		self.update()
-		if self.die == False:
-			self.sprite.set_position(self.x, self.y)
-			self.sprite.draw()
+		self.sprite.set_position(self.x, self.y)
+		self.sprite.draw()
 
 class Target():
 	def __init__(self):
@@ -63,7 +68,7 @@ class Target():
 		self.y = random.randrange(0, SCREEN_HEIGHT)
 		self.circle_radius = 3
 
-		self.sprite = arcade.Sprite('images/target.png')
+		self.sprite = arcade.Sprite('images/target.png', 1)
 
 	def render(self):
 		self.sprite.draw()
@@ -89,7 +94,7 @@ class Bullet():
 		self.circle_radius = 3
 		self.speed = 10
 
-		self.sprite = arcade.Sprite('images/bullet.png')
+		self.sprite = arcade.Sprite('images/bullet.png', 1)
 	
 	def update(self):
 		if self.dir == "left":
