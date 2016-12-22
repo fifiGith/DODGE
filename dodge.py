@@ -22,7 +22,6 @@ class GameWindow(arcade.Window):
 		self.world.update()
 		self.world.target.render()
 		self.world.player.render()
-		self.world.spawn_bullet()
 
 class World:
 	def __init__(self):
@@ -31,7 +30,10 @@ class World:
 		self.bullet = Bullet(None)
 
 		self.player_collide_bullet = False
+		self.player_collide_target = False
+
 		self.bullet_list = []
+		self.target_list = []
 
 	def spawn_bullet(self):
 		self.bullet_list.append(Bullet(RandomDir()))
@@ -40,8 +42,15 @@ class World:
 			if self.player_collide_bullet == False:
 				self.player_collide_bullet = arcade.check_for_collision(self.player.sprite, bullet.sprite)
 
+	def spawn_target(self):
+		self.player_collide_target = arcade.check_for_collision(self.player.sprite, self.target.sprite)
+		if (self.player_collide_target == True):
+			self.target.x = random.randrange(0, SCREEN_WIDTH)
+			self.target.y = random.randrange(0, SCREEN_HEIGHT)
+
 	def update(self):
-		pass
+		self.spawn_bullet()
+		self.spawn_target()
 
 class Player():
 	def __init__(self, world):
@@ -71,6 +80,7 @@ class Target():
 		self.sprite = arcade.Sprite('images/target.png', 1)
 
 	def render(self):
+		self.sprite.set_position(self.x, self.y)
 		self.sprite.draw()
 
 class Bullet():
@@ -92,7 +102,7 @@ class Bullet():
 			pass
 
 		self.circle_radius = 3
-		self.speed = 10
+		self.speed = 2
 
 		self.sprite = arcade.Sprite('images/bullet.png', 1)
 	
