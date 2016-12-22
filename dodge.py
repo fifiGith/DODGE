@@ -14,6 +14,7 @@ class GameWindow(arcade.Window):
 		self.dir = 0
 		self.player = Player()
 		self.set_mouse_visible(False)
+		self.target = Target()
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		self.player.x = x
@@ -22,6 +23,7 @@ class GameWindow(arcade.Window):
 	def on_draw(self):
 		arcade.start_render()
 		self.player.draw()
+		self.target.draw()
 		self.dir = RandomDir()
 		self.bullet_list.append(Bullet(self.dir))
 		for bullet in self.bullet_list:
@@ -35,6 +37,15 @@ class Player:
 
 	def draw(self):
 		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.RED)
+
+class Target:
+	def __init__(self):
+		self.x = random.randrange(0, SCREEN_WIDTH)
+		self.y = random.randrange(0, SCREEN_HEIGHT)
+		self.circle_radius = 3
+
+	def draw(self):
+		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.GREEN)
 
 class Bullet:
 	def __init__(self, dir):
