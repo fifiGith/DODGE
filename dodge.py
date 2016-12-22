@@ -4,6 +4,8 @@ import random
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
+GAMEOVER = False
+
 class GameWindow(arcade.Window):
 	def __init__(self, width, height):
 		super().__init__(width, height)
@@ -12,6 +14,10 @@ class GameWindow(arcade.Window):
 
 		self.world = World()
 		self.set_mouse_visible(False)
+
+	def on_key_press(self, key, modifiers):
+		if key == arcade.key.SPACE:
+			self.world = World()
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		self.world.player.x = x
@@ -35,8 +41,12 @@ class World:
 		self.bullet_list = []
 		self.target_list = []
 
+		self.score = -1
+
 	def spawn_bullet(self):
-		self.bullet_list.append(Bullet(RandomDir()))
+		if random.randrange(0, 100) < 12:
+			self.bullet_list.append(Bullet(RandomDir()))
+
 		for bullet in self.bullet_list:
 			bullet.render()
 			if self.player_collide_bullet == False:
@@ -44,29 +54,29 @@ class World:
 
 	def spawn_target(self):
 		self.player_collide_target = arcade.check_for_collision(self.player.sprite, self.target.sprite)
-		if (self.player_collide_target == True):
+		if self.player_collide_target == True:
 			self.target.x = random.randrange(0, SCREEN_WIDTH)
 			self.target.y = random.randrange(0, SCREEN_HEIGHT)
+			self.score += 1
+
 
 	def update(self):
 		self.spawn_bullet()
 		self.spawn_target()
+		self.output = "Score: {} || Space to reset".format(self.score)
+		arcade.draw_text(self.output, 20, 20, arcade.color.WHITE, 14)
 
 class Player():
 	def __init__(self, world):
-		self.x = 0
-		self.y = 0
+		self.x = SCREEN_WIDTH / 2
+		self.y = SCREEN_HEIGHT / 2
 		self.circle_radius = 3
 
 		self.world = world
 
-		self.sprite = arcade.Sprite('images/player.png', 1)
-
-	def update(self):
-		pass
+		self.sprite = arcade.Sprite('images/player.png')
 
 	def render(self):
-		self.update()
 		if self.world.player_collide_bullet == False:
 			self.sprite.set_position(self.x, self.y)
 			self.sprite.draw()
@@ -77,7 +87,7 @@ class Target():
 		self.y = random.randrange(0, SCREEN_HEIGHT)
 		self.circle_radius = 3
 
-		self.sprite = arcade.Sprite('images/target.png', 1)
+		self.sprite = arcade.Sprite('images/target.png')
 
 	def render(self):
 		self.sprite.set_position(self.x, self.y)
@@ -102,9 +112,9 @@ class Bullet():
 			pass
 
 		self.circle_radius = 3
-		self.speed = 2
+		self.speed = 7
 
-		self.sprite = arcade.Sprite('images/bullet.png', 1)
+		self.sprite = arcade.Sprite('images/bullet.png')
 	
 	def update(self):
 		if self.dir == "left":
