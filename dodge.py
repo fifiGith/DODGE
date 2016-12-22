@@ -19,13 +19,13 @@ class GameWindow(arcade.Window):
 
 	def on_draw(self):
 		arcade.start_render()
-		self.world.player.draw()
-		self.world.target.draw()
+		self.world.target.render()
+		self.world.player.render()
 		self.world.spawn_bullet()
 
 class World:
 	def __init__(self):
-		self.player = Player()
+		self.player = Player(self)
 		self.target = Target()
 		self.bullet = Bullet(None)
 
@@ -34,27 +34,41 @@ class World:
 	def spawn_bullet(self):
 		self.bullet_list.append(Bullet(RandomDir()))
 		for bullet in self.bullet_list:
-			bullet.draw()
+			bullet.render()
 
-class Player(World):
-	def __init__(self):
+class Player():
+	def __init__(self, world):
 		self.x = 0
 		self.y = 0
 		self.circle_radius = 3
 
-	def draw(self):
-		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.RED)
+		self.die = False
 
-class Target(World):
+		self.world = world
+
+		self.sprite = arcade.Sprite('images/player.png')
+
+	def update(self):
+		pass
+
+	def render(self):
+		self.update()
+		if self.die == False:
+			self.sprite.set_position(self.x, self.y)
+			self.sprite.draw()
+
+class Target():
 	def __init__(self):
 		self.x = random.randrange(0, SCREEN_WIDTH)
 		self.y = random.randrange(0, SCREEN_HEIGHT)
 		self.circle_radius = 3
 
-	def draw(self):
-		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.GREEN)
+		self.sprite = arcade.Sprite('images/target.png')
 
-class Bullet(World):
+	def render(self):
+		self.sprite.draw()
+
+class Bullet():
 	def __init__(self, dir):
 		self.dir = dir
 		if self.dir == "left":
@@ -74,8 +88,10 @@ class Bullet(World):
 
 		self.circle_radius = 3
 		self.speed = 10
+
+		self.sprite = arcade.Sprite('images/bullet.png')
 	
-	def update(self, delta_time):
+	def update(self):
 		if self.dir == "left":
 			self.x += self.speed
 		elif self.dir == "right":
@@ -87,7 +103,7 @@ class Bullet(World):
 		else:
 			pass
 
-	def draw(self):
+	def render(self):
 		self.stop_update = False
 		
 		if self.stop_update == False:
@@ -97,8 +113,9 @@ class Bullet(World):
 	
 			if self.stop_update == False:
 				self.update();
-				arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.WHITE)
- 
+				self.sprite.set_position(self.x, self.y)
+				self.sprite.draw()
+				
 def RandomDir():
 	n = random.randrange(0, 4)
 	if n == 0:
