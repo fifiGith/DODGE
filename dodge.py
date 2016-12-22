@@ -55,8 +55,8 @@ class World:
 	def spawn_target(self):
 		self.player_collide_target = arcade.check_for_collision(self.player.sprite, self.target.sprite)
 		if self.player_collide_target == True:
-			self.target.x = random.randrange(0, SCREEN_WIDTH)
-			self.target.y = random.randrange(0, SCREEN_HEIGHT)
+			self.target.x = random.randrange(self.target.range, SCREEN_WIDTH - self.target.range)
+			self.target.y = random.randrange(self.target.range, SCREEN_HEIGHT - self.target.range)
 			self.score += 1
 
 
@@ -83,8 +83,9 @@ class Player():
 
 class Target():
 	def __init__(self):
-		self.x = random.randrange(0, SCREEN_WIDTH)
-		self.y = random.randrange(0, SCREEN_HEIGHT)
+		self.range = 50
+		self.x = random.randrange(self.range, SCREEN_WIDTH - self.range)
+		self.y = random.randrange(self.range, SCREEN_HEIGHT - self.range)
 		self.circle_radius = 3
 
 		self.sprite = arcade.Sprite('images/target.png')
