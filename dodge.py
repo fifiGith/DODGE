@@ -10,7 +10,7 @@ class GameWindow(arcade.Window):
 
 		arcade.set_background_color(arcade.color.BLACK)
 
-		self.bullet = Bullet("left")
+		self.bullet = Bullet("up")
 
 	def on_draw(self):
 		arcade.start_render()
@@ -22,12 +22,21 @@ class Bullet:
 		self.dir = dir
 		self.x = random.randrange(0, SCREEN_WIDTH)
 		self.y = random.randrange(0, SCREEN_HEIGHT)
+		self.speed = 5
 		self.circle_radius = 20
 	
-	def update(self, delta_time):
-		pass
+	def update(self):
+		if self.dir == "left":
+			self.x += self.speed
+		elif self.dir == "right":
+			self.x -= self.speed
+		elif self.dir == "up":
+			self.y -= self.speed
+		elif self.dir == "down":
+			self.y += self.speed
 
 	def draw(self):
+		self.update();
 		arcade.draw_circle_filled(self.x, self.y, 30, arcade.color.WHITE)
  
 def main():
