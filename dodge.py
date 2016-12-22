@@ -36,7 +36,7 @@ class World:
 		for bullet in self.bullet_list:
 			bullet.draw()
 
-class Player:
+class Player(World):
 	def __init__(self):
 		self.x = 0
 		self.y = 0
@@ -45,7 +45,7 @@ class Player:
 	def draw(self):
 		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.RED)
 
-class Target:
+class Target(World):
 	def __init__(self):
 		self.x = random.randrange(0, SCREEN_WIDTH)
 		self.y = random.randrange(0, SCREEN_HEIGHT)
@@ -54,7 +54,7 @@ class Target:
 	def draw(self):
 		arcade.draw_circle_filled(self.x, self.y, self.circle_radius, arcade.color.GREEN)
 
-class Bullet:
+class Bullet(World):
 	def __init__(self, dir):
 		self.dir = dir
 		if self.dir == "left":
@@ -75,7 +75,7 @@ class Bullet:
 		self.circle_radius = 3
 		self.speed = 10
 	
-	def update(self):
+	def update(self, delta_time):
 		if self.dir == "left":
 			self.x += self.speed
 		elif self.dir == "right":
