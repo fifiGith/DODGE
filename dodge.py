@@ -37,11 +37,11 @@ class World:
 		self.bullet_list.append(Bullet(RandomDir()))
 		for bullet in self.bullet_list:
 			bullet.render()
+			if self.player_collide_bullet == False:
+				self.player_collide_bullet = arcade.check_for_collision(self.player.sprite, bullet.sprite)
 
 	def update(self):
-		for bullet in self.bullet_list:
-			self.player_collide_bullet = arcade.geometry.check_for_collision(bullet.sprite, self.player.sprite)
-		self.plyer_collide_target = arcade.geometry.check_for_collision(self.target.sprite, self.player.sprite)
+		pass
 
 class Player():
 	def __init__(self, world):
@@ -54,13 +54,13 @@ class Player():
 		self.sprite = arcade.Sprite('images/player.png', 1)
 
 	def update(self):
-		if self.world.player_collide_bullet == True:
-			self.sprite.kill()
+		pass
 
 	def render(self):
 		self.update()
-		self.sprite.set_position(self.x, self.y)
-		self.sprite.draw()
+		if self.world.player_collide_bullet == False:
+			self.sprite.set_position(self.x, self.y)
+			self.sprite.draw()
 
 class Target():
 	def __init__(self):
