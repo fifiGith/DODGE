@@ -10,22 +10,29 @@ class GameWindow(arcade.Window):
 
 		arcade.set_background_color(arcade.color.BLACK)
 
-		self.bullet_list = []
-		self.dir = 0
-		self.player = Player()
+		self.world = World()
 		self.set_mouse_visible(False)
-		self.target = Target()
 
 	def on_mouse_motion(self, x, y, dx, dy):
-		self.player.x = x
-		self.player.y = y
+		self.world.player.x = x
+		self.world.player.y = y
 
 	def on_draw(self):
 		arcade.start_render()
-		self.player.draw()
-		self.target.draw()
-		self.dir = RandomDir()
-		self.bullet_list.append(Bullet(self.dir))
+		self.world.player.draw()
+		self.world.target.draw()
+		self.world.spawn_bullet()
+
+class World:
+	def __init__(self):
+		self.player = Player()
+		self.target = Target()
+		self.bullet = Bullet(None)
+
+		self.bullet_list = []
+
+	def spawn_bullet(self):
+		self.bullet_list.append(Bullet(RandomDir()))
 		for bullet in self.bullet_list:
 			bullet.draw()
 
@@ -62,6 +69,8 @@ class Bullet:
 		elif self.dir == "down":
 			self.x = random.randrange(0, SCREEN_WIDTH)
 			self.y = 0
+		else:
+			pass
 
 		self.circle_radius = 3
 		self.speed = 10
@@ -75,6 +84,8 @@ class Bullet:
 			self.y -= self.speed
 		elif self.dir == "down":
 			self.y += self.speed
+		else:
+			pass
 
 	def draw(self):
 		self.stop_update = False
